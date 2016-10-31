@@ -13,12 +13,26 @@ using KryX2.FileManagement;
 namespace KryX2.PacketManagement
 {
 
+    //unused
+    //internal class PID
+    //{
+    //    internal byte AUTH_INFO = 0x50;
+    //    internal byte AUTH_CHECK = 0x51;
+    //    internal byte PING = 0x25;
+    //    internal byte NULL = 0x00;
+    //    internal byte ENTER_CHAT = 0x0a;
+    //    internal byte SET_EMAIL = 0x59;
+    //    internal byte CHAT_EVENT = 0x0f;
+    //    internal byte CREATE_ACCOUNT = 0x3d;
+    //    internal byte LOGON_RESPONSE = 0x3a;
+    //}
 
 
 
-    public static class PacketParser
+    internal static class PacketParser
     {
 
+        private static string NewLine = Environment.NewLine;
         private static string RandomName()
         {
 

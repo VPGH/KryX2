@@ -107,6 +107,8 @@ namespace KryX2.FileManagement
 
                 try
                 {
+
+                    fileText = TidyText(fileText);
                     //bad keys should already be in tidy format
                     if (fileText.Length == 13)
                     { //if length is 13 proceed
@@ -132,12 +134,24 @@ namespace KryX2.FileManagement
         } //loads scanlist into an array
 
 
+        //remove spaces in front or end of entries as well removes extra text
         private static string TidyText(string text)
         {
             text = text.Trim(); //remove spaces from front and back
             text = text.Replace("-", ""); //remove dashes
-            return text;
-        } //remove spaces in front or end of entries as well removes extra text
+
+            if (text.Length > 12)
+            {
+                if (text.Substring(0, 2) == "//")
+                    return string.Empty;
+
+                return text;
+            }
+            else
+            {
+                return string.Empty;
+            }    
+        }
 
         private static string ReturnCdKey()
         {

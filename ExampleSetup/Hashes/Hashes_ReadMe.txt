@@ -1,0 +1,1 @@
+Hash files should be placed within this directory.

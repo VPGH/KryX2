@@ -6,6 +6,7 @@ using KryX2.UI;
 using KryX2.Sockets;
 using KryX2.Settings;
 using System.Diagnostics;
+using System.IO;
 
 namespace KryX2.FileManagement
 {
@@ -111,59 +112,102 @@ namespace KryX2.FileManagement
             return _proxyList.FindIndex(proxydetails => proxydetails.Address.Equals(address));
         }
 
+        //loads all proxy list
         internal static void ImportProxylist()
         {
-
-            string path = (GeneratedSettings.AppDirectory + @"\Text\Proxies.txt"); //gets executables directory
-            string fileText = null; //default
-            _proxyIndex = 0; //used to store which proxy to take globally
-
+            //clear proxy list, reset take from index
             _proxyList.Clear();
+            _proxyIndex = 0;
 
-            System.IO.StreamReader FileReader = new System.IO.StreamReader(path);
-            while ((fileText = FileReader.ReadLine()) != null)
+            string[] paths;
+            paths = new string[]
             {
-                try
+                    GeneratedSettings.AppDirectory + @"\Text\Proxies.txt",
+                    GeneratedSettings.AppDirectory + @"\Text\ProxiesHttp.txt",
+                    GeneratedSettings.AppDirectory + @"\Text\ProxiesS4.txt",
+                    GeneratedSettings.AppDirectory + @"\Text\ProxiesS5.txt"
+            };
+
+            ProxyType[] types;
+            types = new ProxyType[]
+            {
+                ProxyType.Default,
+                ProxyType.Http,
+                ProxyType.Socks4,
+                ProxyType.Socks5
+            };
+
+
+            for (int i = 0; i < paths.Length; i++)
+            {
+                string path = paths[i];
+                string fileText = null; //default
+                ProxyType type = types[i];
+
+                if (File.Exists(path))
                 {
-                    fileText = TidyText(fileText);
-
-                    if (!string.IsNullOrEmpty(fileText))
-                    { //filetext still contains data, lets proceed
-
-                        ProxyDetails proxyInfo = new ProxyDetails(); //initialize
-
-                        ProxyParser parser = new ProxyParser();
-                        parser.Engage(fileText); //presets some valus on our sorter                    
-
-                        proxyInfo.Address = parser.ReturnAddress();
-
-                        //if valid ip proceed
-                        if (proxyInfo.Address != null)
+                    StreamReader FileReader = new StreamReader(path);
+                    while ((fileText = FileReader.ReadLine()) != null)
+                    {
+                        try
                         {
-                            //if already in list continue past
-                            if (ReturnProxyIndex(proxyInfo.Address) != -1)
-                                continue;
-                            proxyInfo.Port = parser.ReturnPort();
-                            proxyInfo.Type = parser.ReturnType();
-                            proxyInfo.UsedCount = 0;
-                            //bool proxyFound = _proxyList.Exists(IPAddress => IPAddress.Address == proxyInfo.Address);
-                            //if (!proxyFound)
-                            //{ 
-                            _proxyList.Add(proxyInfo);
-                            //}
-                        }
+                            fileText = TidyText(fileText);
+
+                            if (!string.IsNullOrEmpty(fileText))
+                            { //filetext still contains data, lets proceed
+
+                                //set proxy type from the beginning if reading from a specified type file
+                                switch (type)
+                                {
+                                    case ProxyType.Default:
+                                        break;
+                                    case ProxyType.Http:
+                                        fileText = fileText + "@http";
+                                        break;
+                                    case ProxyType.Socks4:
+                                        fileText = fileText + "@s4";
+                                        break;
+                                    case ProxyType.Socks5:
+                                        fileText = fileText + "@s5";
+                                        break;
+                                }
+
+                                //pass string to proxy parser
+                                ProxyDetails proxyInfo = new ProxyDetails(); //initialize
+                                ProxyParser parser = new ProxyParser();
+                                parser.Engage(fileText); //presets some valus on our sorter                    
+
+                                proxyInfo.Address = parser.ReturnAddress();
+
+                                //if valid ip proceed
+                                if (proxyInfo.Address != null)
+                                {
+                                    //if already in list continue past
+                                    if (ReturnProxyIndex(proxyInfo.Address) != -1)
+                                        continue;
+                                    proxyInfo.Port = parser.ReturnPort();
+                                    proxyInfo.Type = parser.ReturnType();
+                                    proxyInfo.UsedCount = 0;
+                                    //bool proxyFound = _proxyList.Exists(IPAddress => IPAddress.Address == proxyInfo.Address);
+                                    //if (!proxyFound)
+                                    //{ 
+                                    _proxyList.Add(proxyInfo);
+                                }
+                            }
+                        } //try end
+                        finally
+                        {
+                            //do nothing
+                        } //try set scanlist entry
                     }
-                } //try end
-                finally
-                {
-                    //do nothing
-                } //try set scanlist entry
+                    FileReader.Close();
+                }
+
             }
-            FileReader.Close();
 
             Chat.Add(Color.Silver, "Loaded " + _proxyList.Count + " proxies." + Environment.NewLine);
 
-        } //loads scanlist into an array
+        }
 
         private static string TidyText(string text)
         {
@@ -171,6 +215,10 @@ namespace KryX2.FileManagement
 
             if (text.Length > 6)
             { //only if string could potentially be of proxy length
+
+                if (text.Substring(0, 2) == "//")
+                    return string.Empty;
+
                 int locationTab = 0;
                 int locationSpace = 0;
                 int locationResult = 0;
@@ -190,15 +238,15 @@ namespace KryX2.FileManagement
                 //and set result
                 if (locationResult > 1) { text = text.Substring(0, (locationResult)); }
                 //if locationresult greater than 1 then remove excess
+                return text;
             }
             else
             {//proxy string not long enough
-                text = string.Empty; //cant possibly be a proxy so empty string
+                return string.Empty; //cant possibly be a proxy so empty string
             }
 
-            return text;
         } //remove spaces in front or end of entries as well removes extra text
 
     }  //proxylist class end
-    
+
 }

@@ -1,0 +1,1 @@
+Kry executable should be placed within this directory.

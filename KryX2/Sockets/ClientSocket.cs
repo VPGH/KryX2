@@ -3,7 +3,6 @@
 using System.Net;
 using System.Net.Sockets;
 using KryX2.Client;
-using System.Diagnostics;
 
 namespace KryX2.Sockets
 {
@@ -12,7 +11,7 @@ namespace KryX2.Sockets
     {
 
         internal Socket _socket;
-        internal Timing _timing;
+        private Timing _timing;
 
         internal ClientSocket()
         {

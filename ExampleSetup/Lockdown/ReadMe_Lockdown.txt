@@ -1,0 +1,1 @@
+Lockdown files should be placed within this directory, including star.bin.

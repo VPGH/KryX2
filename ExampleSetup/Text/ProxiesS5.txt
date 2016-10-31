@@ -1,0 +1,2 @@
+//place only socks 5 proxies in this file
+//socks 5 proxies are not yet supported.

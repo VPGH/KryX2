@@ -1,0 +1,1 @@
+Proxies and cdkeys should be placed within this directory.

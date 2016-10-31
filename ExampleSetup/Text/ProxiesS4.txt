@@ -1,0 +1,4 @@
+//place only socks 4 proxies in this file
+
+101.222.303.10:1080
+55.102.22.33:1080

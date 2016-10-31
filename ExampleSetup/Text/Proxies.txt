@@ -1,0 +1,12 @@
+//proxies of any type go here.
+//use @http, @s4, and @s5 to specify proxy type.
+//ex: 127.0.0.1@http
+//if type is not specified the program will try to determine
+//type automatically; but it's recommended to specify when possible.
+//alternatively, you may use provided files for each type.
+//ex: socks 4 proxies would go in ProxiesS4.txt. There is no need to specify
+//type when placing proxies in their specific text file.
+
+122.0.10.50:1080
+20.30.112.25:1080@s4
+49.40.114.123:8080@http

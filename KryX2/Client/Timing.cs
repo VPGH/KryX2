@@ -1,20 +1,19 @@
-﻿using System;
-using System.Timers;
+﻿using System.Timers;
 using KryX2.Sockets;
 using KryX2.Settings;
 using KryX2.PacketManagement;
-using System.Diagnostics;
 
 namespace KryX2.Client
 {
     internal class Timing
     {
 
-        private Timer _timer = new System.Timers.Timer();
+        private Timer _timer;
         private ClientSocket _clientSocket;
 
         private void InitializeSettings()
         {
+            _timer = new System.Timers.Timer();
             _timer.Interval = 15000;
             _timer.Elapsed += new ElapsedEventHandler(TimerFired);
             StopTimer();
@@ -51,9 +50,9 @@ namespace KryX2.Client
                 //if in target channel
                 else
                 {
-                    //Builder builder = new Builder();
-                    //builder.InsertNTString(UserSettings.IdleMessage);
-                    //builder.SendPacket(_clientSocket, 0x0e);
+                    Builder builder = new Builder();
+                    builder.InsertNTString(UserSettings.IdleMessage);
+                    builder.SendPacket(_clientSocket, 0x0e);
                 }
             }
             //if not logged on yet

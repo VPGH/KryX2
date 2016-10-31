@@ -33,8 +33,8 @@ namespace KryX2.Settings
             ClientPassword = "mypassaa";
             RandomNames = false;
             GameClient = GameClient.Random;
-            ClientsPerProxy = 4;
-            MaxClients = 20;
+            ClientsPerProxy = 3;
+            MaxClients = 999; //set this to anything, value will automatically cap if not enough keys/proxies.
         }
     }
 }
